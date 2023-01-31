@@ -1,4 +1,4 @@
-#+title: Readme
+#+title: My-Dijkstra
 
 * Disclaimer
 This project was made to understand more about path-finding algorithms so its a basic implementation of the original dijkstra.
