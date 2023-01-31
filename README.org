@@ -1,0 +1,27 @@
+#+title: Readme
+
+* Disclaimer
+This project was made to understand more about path-finding algorithms so its a basic implementation of the original dijkstra.
+
+* The method
+** Graph
+This program has a hard coded graph that looks like the following picture:
+#+DOWNLOADED: screenshot @ 2023-01-31 22:46:18
+#+attr_org: :width 300px
+[[file:files/20230131-224618_screenshot.png]]
+
+The graph is represented by the following matrix:
+#+begin_src C
+int graph[5][5] = {{0, 0, 2, 1, 0},
+                   {0, 0, 1, 1, 2},
+                   {2, 1, 0, 0, 3},
+                   {1, 1, 0, 0, 0},
+                   {0, 2, 3, 0, 0}};
+#+end_src
+Where each array inside the matrix shows the distance to the node signified by the index. For example the element =graph[2][0] = 2= would mean that the Node "2" is connected to Node "0" by a distance of =2=.
+
+** Path-finding
+It is clear that the path from node "1" to node "0" is from =1 -> 3 -> 0= as the =total distance= is =2=. Therefore I made a recursive function that achieves the following tasks:
+
+    - Finds all possible paths to the destination
+    - Finds the shortest path to the destination
