@@ -5,11 +5,14 @@ var cost = 10000000;
 var path = [];
 var final_path = [];
 var run = 0;
-var gridsize = 3;
-var visited = []
+var gridsize = 6;
+
+var visited = [];
 var success = false;
 // Get all nodes
 var totalNodes = gridsize*gridsize;
+
+
 
 function pathfind() {
     grid = gridToArray(gridsize);
@@ -18,33 +21,66 @@ function pathfind() {
     dijkstra(startid,endid,grid)
 }
 
+async function color_path() {
+    if (final_path.length == 0){
+        // path is empty
+        return false;
+    }
+    for (var i = 0;i < totalNodes;i++) {
+        // if the path has that node color it
+        if (final_path.includes(i)) {
+            // to grey
+            console.log("to grey"+i)
+            var count = final_path.indexOf(i) + 1;
+            var intensity = ''+count+count
+            var color = '#FF'+intensity+'00'+ intensity;
+            $('#'+i).css('background-color',color)
+        } else {
+            // back to white
+            console.log("to white"+i)
+            $('#'+i).css('background-color','white')
+        }
+    }
+    await sleep(5000)
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 function dijkstra(start,end,grid){
+    // setting up the visited nodes
+    for (var i = 0;i < totalNodes;i++) {
+        visited[i]=0
+    }
     visited[start] = 1;
-    visit_node(start,end,start,grid)
+    path.push(start);
+    visit_node(start,end,start,grid);
     if (success) {
-        console.log("found the path", path)
+        console.log("found the path", final_path)
         console.log("cost of ", cost)
+        color_path();
     }
 }
 
 function visit_node(current,end,before,grid){
     if (current != end){
-        console.log("Node " +current+" is not "+end)
+        // console.log("Node " +current+" is not "+end)
         // Loop over nodes
         for (var node = 0; node < totalNodes ; node++) {
             // Find the distance to that node
             var distance = grid[current][node];
-            console.log(distance+" to node "+ node);
             // Check if distance is not 0 meaning its connected
             // Check it is not allready visited
             if ((distance != 0) && (visited[node] == 0)){
-                console.log("Found a valid node of id: "+node);
+                // console.log("Found a valid node of id: "+node+" from root "+current);
                 // add the distance to the run
                 run += distance;
                 // add node to visited
                 visited[node] = 1;
                 // add node to path
                 path.push(node);
+
                 // visit this node
                 visit_node(node,end,current,grid)
             }
@@ -63,11 +99,15 @@ function visit_node(current,end,before,grid){
         // Check the cost
         if (cost > run){
             // update the cost and final path
+            console.log("this run is better as "+cost+" is greater than "+run)
             cost = run;
 
+            final_path = []
             for (var j=0;j < path.length;j++) {
                 final_path[j] = path[j]
             }
+            console.log("path is "+path)
+            console.log("final_path is "+final_path)
         }
         // Even if it is not the best run return to previous node
         // to keep looking for more paths
@@ -80,7 +120,7 @@ function visit_node(current,end,before,grid){
         // remove from path
         path.pop();
 
-        succss = true;
+        success = true;
     }
 }
 
@@ -142,10 +182,16 @@ function gridToArray(n){
 // function that clears the grid
 function clearGrid(){
     $(".grid").remove();
+    startid = 0;
+    endid = 0;
+    cost = 10000000;
+    path = [];
+    final_path = [];
+    run = 0;
+    visited = [];
+    success = false;
 };
 
-// function that prompts the user to select the number of boxes in a new grid
-// the function then also creates that new grid
 function refreshGrid(){
     var z = 0;
     while (z < 3){
@@ -154,6 +200,7 @@ function refreshGrid(){
     clearGrid();
     createGrid(z);
     gridsize = z;
+    totalNodes = gridsize*gridsize;
 };
 
 function createGrid(x) {
