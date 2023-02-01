@@ -3,18 +3,87 @@ var startid = 0;
 var endid = 0;
 var cost = 10000000;
 var path = [];
+var final_path = [];
 var run = 0;
 var gridsize = 3;
-
-function dijkstra(){
-
-}
+var visited = []
+var success = false;
+// Get all nodes
+var totalNodes = gridsize*gridsize;
 
 function pathfind() {
     grid = gridToArray(gridsize);
     console.log(grid);
-    console.log(startid, endid);
+    // console.log(startid, endid);
+    dijkstra(startid,endid,grid)
 }
+
+function dijkstra(start,end,grid){
+    visited[start] = 1;
+    visit_node(start,end,start,grid)
+    if (success) {
+        console.log("found the path", path)
+        console.log("cost of ", cost)
+    }
+}
+
+function visit_node(current,end,before,grid){
+    if (current != end){
+        console.log("Node " +current+" is not "+end)
+        // Loop over nodes
+        for (var node = 0; node < totalNodes ; node++) {
+            // Find the distance to that node
+            var distance = grid[current][node];
+            console.log(distance+" to node "+ node);
+            // Check if distance is not 0 meaning its connected
+            // Check it is not allready visited
+            if ((distance != 0) && (visited[node] == 0)){
+                console.log("Found a valid node of id: "+node);
+                // add the distance to the run
+                run += distance;
+                // add node to visited
+                visited[node] = 1;
+                // add node to path
+                path.push(node);
+                // visit this node
+                visit_node(node,end,current,grid)
+            }
+        }
+        // Finished branching to all nodes
+        // Unvisit this node to go back
+        visited[current] = 0;
+
+        // Remove this node from the path
+        path.pop();
+
+        // Delete the distance from the run of the before node to this one
+        run -= grid[before][current]
+    } else {
+        // Reached the end
+        // Check the cost
+        if (cost > run){
+            // update the cost and final path
+            cost = run;
+
+            for (var j=0;j < path.length;j++) {
+                final_path[j] = path[j]
+            }
+        }
+        // Even if it is not the best run return to previous node
+        // to keep looking for more paths
+
+        // delete distance to go back to the previous node
+        run -= grid[before][current]
+        // unvisit node
+        visited[current] = 0;
+
+        // remove from path
+        path.pop();
+
+        succss = true;
+    }
+}
+
 
 function gridToArray(n){
     // this function takes the grid and makes it an array
@@ -35,8 +104,6 @@ function gridToArray(n){
         // Init connections
         var connections = [];
 
-        // Get all nodes
-        var totalNodes = n*n;
 
         if ($('#'+counter).css('background-color') == "rgb(0, 0, 0)") {
             // It is a wall
@@ -46,13 +113,20 @@ function gridToArray(n){
             grid.push(connections);
         } else {
             // Not a wall
-            for (var node = 0; node < (totalNodes - 1); node++) {
+            for (var node = 0; node < totalNodes; node++) {
                 if ((node == (counter-1)) || (node == (counter+1)) || (node == (counter+n)) || (node == (counter-n))){
                     // console.log($('#'+node).css('background-color'));
                     if ($('#'+node).css('background-color') == "rgb(0, 0, 0)") {
                         connections.push(0);
                     } else {
-                        connections.push(1);
+                        // Make sure the node is not next to a wall
+                        if ((counter%gridsize == 0) && (node == (counter-1))) {
+                            connections.push(0);
+                        } else if ((counter%gridsize == (gridsize-1)) && (node == (counter+1))){
+                            connections.push(0);
+                        } else {
+                            connections.push(1);
+                        }
                     }
                 } else {
                     connections.push(0);
@@ -114,7 +188,6 @@ function createGrid(x) {
 
 $(document).ready(function() {
     createGrid(gridsize);
-
 
     $(".grid").click(function() {
         $(this).css("background-color", "black");
