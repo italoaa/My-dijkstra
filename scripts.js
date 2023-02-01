@@ -5,7 +5,7 @@ var cost = 10000000;
 var path = [];
 var final_path = [];
 var run = 0;
-var gridsize = 6;
+var gridsize = 5;
 
 var visited = [];
 var success = false;
@@ -16,12 +16,10 @@ var totalNodes = gridsize*gridsize;
 
 function pathfind() {
     grid = gridToArray(gridsize);
-    console.log(grid);
-    // console.log(startid, endid);
-    dijkstra(startid,endid,grid)
+    my_pathfind(startid,endid,grid)
 }
 
-async function color_path() {
+function color_path() {
     if (final_path.length == 0){
         // path is empty
         return false;
@@ -30,25 +28,18 @@ async function color_path() {
         // if the path has that node color it
         if (final_path.includes(i)) {
             // to grey
-            console.log("to grey"+i)
             var count = final_path.indexOf(i) + 1;
             var intensity = ''+count+count
             var color = '#FF'+intensity+'00'+ intensity;
             $('#'+i).css('background-color',color)
         } else {
             // back to white
-            console.log("to white"+i)
             $('#'+i).css('background-color','white')
         }
     }
-    await sleep(5000)
 }
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-function dijkstra(start,end,grid){
+function my_pathfind(start,end,grid){
     // setting up the visited nodes
     for (var i = 0;i < totalNodes;i++) {
         visited[i]=0
@@ -57,15 +48,12 @@ function dijkstra(start,end,grid){
     path.push(start);
     visit_node(start,end,start,grid);
     if (success) {
-        console.log("found the path", final_path)
-        console.log("cost of ", cost)
         color_path();
     }
 }
 
 function visit_node(current,end,before,grid){
     if (current != end){
-        // console.log("Node " +current+" is not "+end)
         // Loop over nodes
         for (var node = 0; node < totalNodes ; node++) {
             // Find the distance to that node
@@ -73,7 +61,6 @@ function visit_node(current,end,before,grid){
             // Check if distance is not 0 meaning its connected
             // Check it is not allready visited
             if ((distance != 0) && (visited[node] == 0)){
-                // console.log("Found a valid node of id: "+node+" from root "+current);
                 // add the distance to the run
                 run += distance;
                 // add node to visited
@@ -99,15 +86,12 @@ function visit_node(current,end,before,grid){
         // Check the cost
         if (cost > run){
             // update the cost and final path
-            console.log("this run is better as "+cost+" is greater than "+run)
             cost = run;
 
             final_path = []
             for (var j=0;j < path.length;j++) {
                 final_path[j] = path[j]
             }
-            console.log("path is "+path)
-            console.log("final_path is "+final_path)
         }
         // Even if it is not the best run return to previous node
         // to keep looking for more paths
@@ -155,7 +139,6 @@ function gridToArray(n){
             // Not a wall
             for (var node = 0; node < totalNodes; node++) {
                 if ((node == (counter-1)) || (node == (counter+1)) || (node == (counter+n)) || (node == (counter-n))){
-                    // console.log($('#'+node).css('background-color'));
                     if ($('#'+node).css('background-color') == "rgb(0, 0, 0)") {
                         connections.push(0);
                     } else {

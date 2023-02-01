@@ -1,31 +1,25 @@
 #+title: My-Dijkstra
 
 * Disclaimer
-This project was made to understand more about path-finding algorithms so its a basic implementation of the original dijkstra.
+~This project was made to understand more about path-finding algorithms so its a basic implementation of the original dijkstra.~
+This project started as a simple C program to solve pathfinding algorithms but now is a javascript implementation of a recursive pathfinding algorithm made by me. This implementation is not dijkstra as it is slow compared to dijkstra. Even though it is slower it is still a interesting algorithm.
 
-* The method
-** Graph
-This program has a hard coded graph that looks like the following picture:
-#+DOWNLOADED: screenshot @ 2023-01-31 22:46:18
-#+attr_org: :width 300px
-[[file:files/20230131-224618_screenshot.png]]
 
-The graph is represented by the following matrix:
-#+begin_src C
-int graph[5][5] = {{0, 0, 2, 1, 0},
-                   {0, 0, 1, 1, 2},
-                   {2, 1, 0, 0, 3},
-                   {1, 1, 0, 0, 0},
-                   {0, 2, 3, 0, 0}};
-#+end_src
-Where each array inside the matrix shows the distance to the node signified by the index. For example the element =graph[2][0] = 2= would mean that the Node "2" is connected to Node "0" by a distance of =2=.
+* How to use this
+The website auto generates two starting positions. then there are two buttons one for changing the grid size and one for doing the pathfinding.
+** Generating new maps
+- The default is 5 as it is almost instant.
+- 6 takes one or two seconds.
+- 7 takes too long and might freeze halfway
+- These maps should be between 3 and 6. =WARNING DO NOT GO MORE THAN 6 IT WILL TAKE TOO LONG=
 
-** Path-finding
-It is clear that the path from node "1" to node "0" is from =1 -> 3 -> 0= as the =total distance= is =2=. Therefore I made a recursive function that achieves the following tasks:
+** Pathfinding
+Once the pathfinding is finished the path will be colored.
 
-    - Finds all possible paths to the destination
-    - Finds the shortest path to the destination
 
-* Task left to do
-- [ ] Accept user start and end position
-- [ ] Add more documentation on how to use the program
+* Future plans
+- [ ] Make a website where it can be used with just a click
+- [ ] Add more algorithms:
+  - [ ] Actual Dijkstra
+  - [ ] A* search
+  - [ ] Breadth-first search
